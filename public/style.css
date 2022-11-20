@@ -1,0 +1,112 @@
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul,
+ol,
+li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+html,
+body {
+  height: 100%;
+  line-height: 1;
+  font-size: 14px;
+  color: #252B42;
+  font-weight: 500;
+  font-family: Montserrat;
+  background-color: #FAFAFA;
+}
+
+._container {
+  max-width: 1046px;
+  padding: 0px 15px;
+  margin: 0px auto;
+}
+
+.header {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 50;
+}
+
+.header__container {
+   display: flex;
+   min-height: 104px;
+   align-items: center; 
+}
+
+.header__logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: inherit;
+}
+
+.page {
+  flex: 1 1 auto;
+}
+
+.page__main-block {
+}
+
+.main-block {
+  position: relative;
+}
+
+.main-block__container {
+}
+
+.main-block__body {
+  position: relative;
+  padding: 124px 0px 191px 0px;
+  z-index: 2;
+  max-width: 400px;
+}
+
+._inner-style {
+  border: 1px solid #252B42;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.lots {
+  padding: 30px 0 30px 0;
+}
+
+.lot > *:not(:last-child) {
+  margin: 0px 0px 15px 0px;
+}
+
+.lots > *:not(:last-child) {
+  margin: 0px 0px 15px 0px;
+}
+
+.price {
+  float: right;
+}
