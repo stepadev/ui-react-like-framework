@@ -176,4 +176,18 @@ api.get('/lots').then((lots) => {
     ...state,
     lots
   }
+
+  setInterval(() => {
+    state = {
+      ...state,
+      lots: state.lots.map((lot) => {
+        return {
+          ...lot,
+          price: Math.round((Math.random() * 10000 + 820))
+        }
+      })
+    }
+    renderApp(state);
+  }, 500);
+
 });
