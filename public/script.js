@@ -1,4 +1,4 @@
-const state = {
+let state = {
   time: new Date(),
   lots: [
     {
@@ -121,20 +121,30 @@ function createLot({lot}) {
   return node;
 }
 
-const newDom = app({state});
-const domRoot = document.getElementById('root');
-
-render(newDom, domRoot);
-
-function render(newDom, domRoot) {
-  domRoot.append(newDom);
+function render(newDomElements, curDomElements) {
+  curDomElements.innerHTML = '';
+  curDomElements.append(newDomElements);
 }
+
+render(
+  app({state}), 
+  document.getElementById('root')
+);
 
 // ------------------------------------------------------------------
 setInterval(() => {
-  state.time = new Date();
-  const root = document.getElementById('root');
-  const curApp = root.querySelector('.app');
-  const newApp = app({state});
-  root.replaceChild(newApp, curApp);
+  // state.time = new Date();
+  // const newApp = app({state});
+  // const root = document.getElementById('root');
+  // root.innerHTML = '';
+  // root.append(newApp); 
+  state = {
+    ...state,
+    time: new Date()
+  }
+
+  render(
+    app({state}), 
+    document.getElementById('root')
+  );
 }, 1000);
