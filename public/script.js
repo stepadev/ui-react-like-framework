@@ -126,25 +126,21 @@ function render(newDomElements, curDomElements) {
   curDomElements.append(newDomElements);
 }
 
-render(
-  app({state}), 
-  document.getElementById('root')
-);
+function renderApp(state) {
+  render(
+    app({state}), 
+    document.getElementById('root')
+  );
+}
+
+renderApp(state);
 
 // ------------------------------------------------------------------
 setInterval(() => {
-  // state.time = new Date();
-  // const newApp = app({state});
-  // const root = document.getElementById('root');
-  // root.innerHTML = '';
-  // root.append(newApp); 
   state = {
     ...state,
     time: new Date()
   }
 
-  render(
-    app({state}), 
-    document.getElementById('root')
-  );
+  renderApp(state);
 }, 1000);
