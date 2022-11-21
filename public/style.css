@@ -89,6 +89,31 @@ body {
   max-width: 400px;
 }
 
+.clock .value {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 15px; 
+}
+
+.clock .icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  margin: 0px 5px 0px 0px;
+}
+
+.clock .icon.day {
+  background-color: #f6d209;
+  float: left;
+} 
+
+.clock .icon.night {
+  background-color: #013788;
+  float: left;
+} 
+
 ._inner-style {
   border: 1px solid #252B42;
   border-radius: 10px;

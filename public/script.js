@@ -56,12 +56,12 @@ function main(state) {
   pageMainBlock.classList.add('page__main-block', 'main-block');
  
   const mainBlockContainer = document.createElement('div');
-  mainBlockContainer.classList.add('main-block__containe', '_container');
+  mainBlockContainer.classList.add('main-block__container', '_container');
   
   const mainBlockBody = document.createElement('div');
   mainBlockBody.className = 'main-block__body';
-  main.append(pageMainBlock);
   
+  main.append(pageMainBlock);
   pageMainBlock.append(mainBlockContainer);
   mainBlockContainer.append(mainBlockBody);
   mainBlockBody.append(clock({time: state.time}));
@@ -71,11 +71,23 @@ function main(state) {
 }
 
 function clock({time}) {
-  const clock = document.createElement('div');
-  clock.classList.add('clock', '_inner-style');
-  clock.innerText = time.toLocaleTimeString();
+  const node = document.createElement('div');
+  node.classList.add('clock', '_inner-style');
   
-  return clock;
+  const value = document.createElement('span');
+  value.className = 'value';
+  value.innerText = time.toLocaleTimeString();
+  node.append(value);
+
+  const icon = document.createElement('span');
+  if (time.getHours() >= 7 && time.getHours() <= 21) {
+    icon.className = 'icon day';
+  } else {
+    icon.className = 'icon night';
+  }
+  node.append(icon);
+
+  return node;
 } 
 
 function lots({lots}) {
@@ -117,3 +129,26 @@ render(newDom, domRoot);
 function render(newDom, domRoot) {
   domRoot.append(newDom);
 }
+
+// ------------------------------------------------------------------
+setInterval(() => {
+  const time = new Date();
+
+  // const clock = document
+  // .getElementById('root')
+  // .querySelector('.app > .page > .page__main-block > .main-block__container > .main-block__body > .clock');
+  // clock.querySelector('.value').innerText = time.toLocaleTimeString();
+  // if (time.getHours() >= 7 && time.getHours() <= 21) {
+  //   clock.querySelector('.icon').className = 'icon day';
+  // } else {
+  //   clock.querySelector('.icon').className = 'icon night';
+  // }
+
+  const app = document
+  .getElementById('root')
+  .querySelector('.app > .page > .page__main-block > .main-block__container > .main-block__body');
+  const curClock = app.querySelector('.clock');
+  const newClock = clock({time});
+  app.replaceChild(newClock, curClock);
+
+}, 1000);
