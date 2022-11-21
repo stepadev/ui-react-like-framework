@@ -132,23 +132,9 @@ function render(newDom, domRoot) {
 
 // ------------------------------------------------------------------
 setInterval(() => {
-  const time = new Date();
-
-  // const clock = document
-  // .getElementById('root')
-  // .querySelector('.app > .page > .page__main-block > .main-block__container > .main-block__body > .clock');
-  // clock.querySelector('.value').innerText = time.toLocaleTimeString();
-  // if (time.getHours() >= 7 && time.getHours() <= 21) {
-  //   clock.querySelector('.icon').className = 'icon day';
-  // } else {
-  //   clock.querySelector('.icon').className = 'icon night';
-  // }
-
-  const app = document
-  .getElementById('root')
-  .querySelector('.app > .page > .page__main-block > .main-block__container > .main-block__body');
-  const curClock = app.querySelector('.clock');
-  const newClock = clock({time});
-  app.replaceChild(newClock, curClock);
-
+  state.time = new Date();
+  const root = document.getElementById('root');
+  const curApp = root.querySelector('.app');
+  const newApp = app({state});
+  root.replaceChild(newApp, curApp);
 }, 1000);
