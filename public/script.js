@@ -161,11 +161,6 @@ function createLot({lot}) {
   return node;
 }
 
-function render(newDomElements, curDomElements) {
-  curDomElements.innerHTML = '';
-  curDomElements.append(newDomElements);
-}
-
 function renderApp(state) {
   render(
     app({state}), 
@@ -175,7 +170,8 @@ function renderApp(state) {
 
 renderApp(state);
 
-// ------------------------------------------------------------------
+// ------------- Dynamics-emulate ----------------
+
 setInterval(() => {
   state = {
     ...state,
@@ -212,3 +208,63 @@ api.get('/lots').then((lots) => {
     stream.subscribe(`price-${lot.id}`, onPrice);
   });
 });
+
+// ------------------- Render ---------------------
+
+// newDomElements -> virtual DOM
+// currentDomElements -> real DOM
+
+function render(newDomElements, currentDomElements) {
+  const newDomElementsRoot = document.createElement(currentDomElements.tagName);
+  newDomElementsRoot.id = currentDomElements.id;
+  newDomElementsRoot.append(newDomElements);
+
+  sync(newDomElementsRoot, currentDomElements);
+}
+
+function sync(newNode, currentNode) {
+
+  // Sync elements
+
+  if (newNode.id !== currentNode.id) {
+    currentNode.id = newNode.id;
+  }
+
+  if (newNode.className !== currentNode.className) {
+    currentNode.className = newNode.className;
+  }
+
+  if (newNode.attributes) {
+    Array.from(newNode.attributes).forEach((attr) => {
+      currentNode[attr.name] = attr.value;
+    });
+  }
+
+  if (newNode.nodeValue !== currentNode.nodeValue) {
+    currentNode.nodeValue = newNode.nodeValue;
+  }
+
+  currentNode.innerHTML = '';
+
+  // Sync child nodes
+
+  const newChildren = newNode.childNodes;
+
+  for (let i = 0; i < newChildren.length; i++) {
+    const newElement = newChildren[i];
+
+    // Add
+    let curElement;
+    if (newElement.nodeType === Node.TEXT_NODE) {
+      curElement = document.createTextNode('');
+    } else {
+      curElement = document.createElement(newElement.tagName);
+    }
+
+    sync(newElement, curElement);
+
+    currentNode.appendChild(curElement);
+  }
+  
+}
+
