@@ -244,27 +244,45 @@ function sync(newNode, currentNode) {
     currentNode.nodeValue = newNode.nodeValue;
   }
 
-  currentNode.innerHTML = '';
-
   // Sync child nodes
 
   const newChildren = newNode.childNodes;
+  const currentChildren = currentNode.childNodes;
 
-  for (let i = 0; i < newChildren.length; i++) {
+  for (let i = 0; i < newChildren.length || i < currentChildren.length; i++) {
     const newElement = newChildren[i];
+    const realElement = currentChildren[i];
 
-    // Add
-    let curElement;
-    if (newElement.nodeType === Node.TEXT_NODE) {
-      curElement = document.createTextNode('');
-    } else {
-      curElement = document.createElement(newElement.tagName);
+    // Remove
+    if (newElement === undefined && realElement !== undefined) {
+      currentNode.remove(realElement);
     }
 
-    sync(newElement, curElement);
+    // Update
+    if (newElement !== undefined && realElement !== undefined && newElement.tagName === realElement.tagName) {
+      sync(newElement, realElement);
+    }
 
-    currentNode.appendChild(curElement);
+    // Replace
+    if (newElement !== undefined && realElement !== undefined && newElement.tagName !== realElement.tagName) {
+      const curElement = createCurrentNodeByNewNode(newElement);
+      sync(newElement, curElement);
+      currentNode.replaceChild(curElement, realElement);
+    }
+
+    // Add
+    if (newElement !== undefined && realElement === undefined) {
+      const curElement = createCurrentNodeByNewNode(newElement);
+      sync(newElement, curElement);
+      currentNode.appendChild(curElement);
+    }
   }
   
 }
 
+function createCurrentNodeByNewNode(newElement) {
+  if (newElement.nodeType === Node.TEXT_NODE) {
+    return document.createTextNode('');
+  } 
+  return document.createElement(newElement.tagName);
+}
