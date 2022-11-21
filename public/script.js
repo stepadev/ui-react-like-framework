@@ -1,19 +1,34 @@
+const api = {
+  get(url) {
+    switch (url) {
+      case '/lots':
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve([
+              {
+                id: 1,
+                name: 'Fender',
+                description: 'Fender description',
+                price: 1600
+              },
+              {
+                id: 2,
+                name: 'Gibson',
+                description: 'Gibson description',
+                price: 4100
+              }
+            ]);
+          }, 1000);
+        });
+      default:
+        throw new Error('Unknown endpoint');  
+    }
+  }
+}
+
 let state = {
   time: new Date(),
-  lots: [
-    {
-      id: 1,
-      name: 'Fender',
-      description: 'Fender description',
-      price: 1600
-    },
-    {
-      id: 2,
-      name: 'Gibson',
-      description: 'Gibson description',
-      price: 4100
-    },
-  ]
+  lots: null
 }
 
 function app({state}) {
@@ -90,7 +105,18 @@ function clock({time}) {
   return node;
 } 
 
+function loading() {
+  const node = document.createElement('p');
+  node.className = 'loading';
+  node.innerText = 'Loading...';
+  return node;
+}
+
 function lots({lots}) {
+  if (lots === null) {
+    return loading();
+  }
+
   const list = document.createElement('div');
   list.className = 'lots';
  
@@ -144,3 +170,10 @@ setInterval(() => {
 
   renderApp(state);
 }, 1000);
+
+api.get('/lots').then((lots) => {
+  state = {
+    ...state,
+    lots
+  }
+});

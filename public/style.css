@@ -135,3 +135,10 @@ body {
 .price {
   float: right;
 }
+
+.loading {
+  padding: 30px 0 30px 0;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
