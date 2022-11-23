@@ -144,6 +144,7 @@ function lots({lots}) {
 function createLot({lot}) {
   const node = document.createElement('article');
   node.classList.add('lot', '_inner-style');
+  node.dataset.key = lot.id;
   
   const price = document.createElement('div');
   price.className = 'price';
@@ -240,6 +241,12 @@ function sync(newNode, currentNode) {
     });
   }
 
+  if (newNode.dataset) {
+    Object.keys(newNode.dataset).forEach((name) => {
+      currentNode.dataset[name] = newNode.dataset[name];
+    })
+  }
+
   if (newNode.nodeValue !== currentNode.nodeValue) {
     currentNode.nodeValue = newNode.nodeValue;
   }
@@ -251,30 +258,30 @@ function sync(newNode, currentNode) {
 
   for (let i = 0; i < newChildren.length || i < currentChildren.length; i++) {
     const newElement = newChildren[i];
-    const realElement = currentChildren[i];
+    const currentElement = currentChildren[i];
 
     // Remove
-    if (newElement === undefined && realElement !== undefined) {
-      currentNode.remove(realElement);
+    if (newElement === undefined && currentElement !== undefined) {
+      currentNode.remove(currentElement);
     }
 
     // Update
-    if (newElement !== undefined && realElement !== undefined && newElement.tagName === realElement.tagName) {
-      sync(newElement, realElement);
+    if (newElement !== undefined && currentElement !== undefined && newElement.tagName === currentElement.tagName) {
+      sync(newElement, currentElement);
     }
 
     // Replace
-    if (newElement !== undefined && realElement !== undefined && newElement.tagName !== realElement.tagName) {
-      const curElement = createCurrentNodeByNewNode(newElement);
-      sync(newElement, curElement);
-      currentNode.replaceChild(curElement, realElement);
+    if (newElement !== undefined && currentElement !== undefined && newElement.tagName !== currentElement.tagName) {
+      const element = createCurrentNodeByNewNode(newElement);
+      sync(newElement, element);
+      currentNode.replaceChild(element, currentElement);
     }
 
     // Add
-    if (newElement !== undefined && realElement === undefined) {
-      const curElement = createCurrentNodeByNewNode(newElement);
-      sync(newElement, curElement);
-      currentNode.appendChild(curElement);
+    if (newElement !== undefined && currentElement === undefined) {
+      const element = createCurrentNodeByNewNode(newElement);
+      sync(newElement, element);
+      currentNode.appendChild(element);
     }
   }
   
