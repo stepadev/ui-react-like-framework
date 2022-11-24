@@ -45,121 +45,208 @@ let state = {
   lots: null
 }
 
+function wrapper(props) {
+  return {
+    type: 'div',
+    props: {
+      className: props.className,
+      children: props.children
+    }
+  }
+}
+
 function app({state}) {
-  const app = document.createElement('div');
-  app.className = 'app';
-  
-  app.append(header());
-  app.append(main(state));
-  
-  return app;
+  return {
+    type: 'div',
+    props: {
+      className: 'app',
+      children: [
+        {
+          type: header,
+          props: {}
+        },
+        {
+          type: main,
+          props: {time: state.time, lots: state.lots}
+        }
+      ]
+    }
+  }
 }
 
 function header() {
-  const header = document.createElement('header');
-  header.className = 'header';
-  
-  const headerContainer = document.createElement('div');
-  headerContainer.classList.add('header__container', '_container');
-  
-  header.append(headerContainer);
-  headerContainer.append(headerLogo());
- 
-  return header;
+  return {
+    type: 'header',
+    props: {
+      className: 'header',
+      children: [
+        {
+          type: wrapper,
+          props: {
+            className: 'header__container _container',
+            children: [
+              {
+                type: headerLogo,
+                props: {},
+              }
+            ]
+          }
+        }   
+      ]
+    }
+  }
 }
 
 function headerLogo() {
-  const headerLogo = document.createElement('a');
-  headerLogo.href = '#';
-  headerLogo.className = 'header__logo';
-  headerLogo.innerText = 'Relvise';
-  
-  return headerLogo;
+  return {
+    type: 'a',
+    props: {
+      href: '#',
+      className: 'header__logo',
+      children: [
+        'Relvise'
+      ]
+    }
+  }
 }
 
 function main(state) {
-  const main = document.createElement('main');
-  main.className = 'page';
-  
-  const pageMainBlock = document.createElement('div');
-  pageMainBlock.classList.add('page__main-block', 'main-block');
- 
-  const mainBlockContainer = document.createElement('div');
-  mainBlockContainer.classList.add('main-block__container', '_container');
-  
-  const mainBlockBody = document.createElement('div');
-  mainBlockBody.className = 'main-block__body';
-  
-  main.append(pageMainBlock);
-  pageMainBlock.append(mainBlockContainer);
-  mainBlockContainer.append(mainBlockBody);
-  mainBlockBody.append(clock({time: state.time}));
-  mainBlockBody.append(lots({lots: state.lots}));
-  
-  return main;
+  return {
+    type: 'main',
+    props: {
+      className: 'page',
+      children: [
+        {
+          type: wrapper,
+          props: {
+            className: 'page__main-block main-block',
+            children: [
+              {
+                type: wrapper,
+                props: {
+                  className: 'main-block__container _container',
+                  children: [
+                    {
+                      type: wrapper,
+                      props: {
+                        className: 'main-block__body',
+                        children: [
+                          {
+                            type: clock,
+                            props: {time: state.time},
+                          },
+                          {
+                            type: lots,
+                            props: {lots: state.lots},
+                          }
+                        ]
+                      }
+                    }   
+                  ]
+                }
+              }   
+            ]
+          }
+        }   
+      ]
+    }
+  }
 }
 
 function clock({time}) {
-  const node = document.createElement('div');
-  node.classList.add('clock', '_inner-style');
-  
-  const value = document.createElement('span');
-  value.className = 'value';
-  value.innerText = time.toLocaleTimeString();
-  node.append(value);
-
-  const icon = document.createElement('span');
-  if (time.getHours() >= 7 && time.getHours() <= 21) {
-    icon.className = 'icon day';
-  } else {
-    icon.className = 'icon night';
+  const isDay = time.getHours() >= 7 && time.getHours() <= 21;
+  return {
+    type: 'div',
+    props: {
+      className: 'clock _inner-style',
+      children: [
+        {
+          type: 'span',
+          props: {
+            className: 'value',
+            children: [
+              time.toLocaleTimeString()
+            ]
+          }
+        },
+        {
+          type: 'span',
+          props: {
+            className: isDay ? 'icon day' : 'icon night',
+          }
+        }
+      ]
+    }
   }
-  node.append(icon);
-
-  return node;
 } 
 
 function loading() {
-  const node = document.createElement('p');
-  node.className = 'loading';
-  node.innerText = 'Loading...';
-  return node;
+  return {
+    type: 'p',
+    props: {
+      className: 'loading',
+      children: [
+        'Loading...'
+      ]
+    }
+  }
 }
 
 function lots({lots}) {
   if (lots === null) {
-    return loading();
+    return {
+      type: loading,
+      props: {}
+    }
   }
 
-  const list = document.createElement('div');
-  list.className = 'lots';
- 
-  lots.forEach(lot => {
-    list.append(createLot({lot}))
-  });
- 
-  return list;
+  return {
+    type: 'div',
+    props: {
+      className: 'lots',
+      children: lots.map((lot) => ({
+        type: createLot,
+        props: {lot}
+      }))
+    }
+  }
 }
 
 function createLot({lot}) {
-  const node = document.createElement('article');
-  node.classList.add('lot', '_inner-style');
-  node.dataset.key = lot.id;
-  
-  const price = document.createElement('div');
-  price.className = 'price';
-  price.innerText = lot.price;
-  node.append(price);
-  
-  const name = document.createElement('h1');
-  name.innerText = lot.name;
-  node.append(name);
-  
-  const description = document.createElement('p');
-  description.innerText = lot.description;
-  node.append(description);
-  
-  return node;
+  return {
+    type: 'article',
+    key: lot.id,
+    props: {
+      className: 'lot _inner-style',
+      children: [
+        {
+          type: 'div',
+          props: {
+            className: 'price',
+            children: [
+              lot.price
+            ]
+          },
+        },
+        {
+          type: 'h1',
+          props: {
+            children: [
+              lot.name
+            ],
+          },
+        },
+        {
+          type: 'p',
+          props: {
+            children: [
+              lot.description
+            ],
+          },
+        }
+      ]
+    }
+  }
 }
 
 function renderApp(state) {
@@ -212,84 +299,100 @@ api.get('/lots').then((lots) => {
 
 // ------------------- Render ---------------------
 
-// newDomElements -> virtual DOM
-// currentDomElements -> real DOM
+function render(virtualDom, realDomRoot) {
+  const evaluatedVirtualDom = evaluate(virtualDom);
 
-function render(newDomElements, currentDomElements) {
-  const newDomElementsRoot = document.createElement(currentDomElements.tagName);
-  newDomElementsRoot.id = currentDomElements.id;
-  newDomElementsRoot.append(newDomElements);
+  const virtualDomRoot = {
+    type: realDomRoot.tagName.toLowerCase(),
+    props: {
+      id: realDomRoot.id,
+      children: [
+        evaluatedVirtualDom
+      ]
+    },
+  }
 
-  sync(newDomElementsRoot, currentDomElements);
+  sync(virtualDomRoot, realDomRoot);
 }
 
-function sync(newNode, currentNode) {
+function evaluate (virtualNode) {
+  if (typeof virtualNode !== 'object') {
+    return virtualNode;
+  }
+
+  if (typeof virtualNode.type === 'function') {
+    return evaluate((virtualNode.type)(virtualNode.props));
+  }
+
+  const props = virtualNode.props || {};
+
+  return {
+    ...virtualNode,
+    props: {
+      ...props,
+      children: Array.isArray(props.children) ? props.children.map(evaluate) : [evaluate(props.children)]
+    }
+  }
+}
+
+function sync(virtualNode, realNode) {
 
   // Sync elements
-
-  if (newNode.id !== currentNode.id) {
-    currentNode.id = newNode.id;
-  }
-
-  if (newNode.className !== currentNode.className) {
-    currentNode.className = newNode.className;
-  }
-
-  if (newNode.attributes) {
-    Array.from(newNode.attributes).forEach((attr) => {
-      currentNode[attr.name] = attr.value;
+  if (virtualNode.props) {
+    Object.entries(virtualNode.props).forEach(([name, value]) => {
+      if (name === 'key' || name === 'children') {
+        return
+      }
+      if (realNode[name] !== value) {
+        realNode[name] = value;
+      }
     });
   }
 
-  if (newNode.dataset) {
-    Object.keys(newNode.dataset).forEach((name) => {
-      currentNode.dataset[name] = newNode.dataset[name];
-    })
+  if (virtualNode.key) {
+    realNode.dataset.key = virtualNode.key;
   }
 
-  if (newNode.nodeValue !== currentNode.nodeValue) {
-    currentNode.nodeValue = newNode.nodeValue;
+  if (typeof virtualNode !== 'object' && virtualNode !== realNode.nodeValue) {
+    realNode.nodeValue = virtualNode;
   }
 
   // Sync child nodes
+  const virtualChildren = virtualNode.props ? virtualNode.props.children || [] : [];
+  const realChildren = realNode.childNodes;
 
-  const newChildren = newNode.childNodes;
-  const currentChildren = currentNode.childNodes;
-
-  for (let i = 0; i < newChildren.length || i < currentChildren.length; i++) {
-    const newElement = newChildren[i];
-    const currentElement = currentChildren[i];
-
+  for (let i = 0; i < virtualChildren.length || i < realChildren.length; i++) {
+    const virtual = virtualChildren[i];
+    const real = realChildren[i];
+    
     // Remove
-    if (newElement === undefined && currentElement !== undefined) {
-      currentNode.remove(currentElement);
+    if (virtual === undefined && real !== undefined) {
+      realNode.remove(real);
     }
 
-    // Update
-    if (newElement !== undefined && currentElement !== undefined && newElement.tagName === currentElement.tagName) {
-      sync(newElement, currentElement);
+    if (virtual !== undefined && real !== undefined && (virtual.type || '') === (real.tagName || '').toLowerCase()) {
+      sync(virtual, real);
     }
 
-    // Replace
-    if (newElement !== undefined && currentElement !== undefined && newElement.tagName !== currentElement.tagName) {
-      const element = createCurrentNodeByNewNode(newElement);
-      sync(newElement, element);
-      currentNode.replaceChild(element, currentElement);
+    if (virtual !== undefined && real !== undefined && (virtual.type || '') !== (real.tagName || '').toLowerCase()) {
+      const newReal = createRealNodeByVirtual(virtual);
+      sync(virtual, newReal);
+      realNode.replaceChild(newReal, real);
     }
-
+    
     // Add
-    if (newElement !== undefined && currentElement === undefined) {
-      const element = createCurrentNodeByNewNode(newElement);
-      sync(newElement, element);
-      currentNode.appendChild(element);
+    if (virtual !== undefined && real === undefined) {
+      const newReal = createRealNodeByVirtual(virtual);
+      sync(virtual, newReal);
+      realNode.appendChild(newReal);
     }
-  }
-  
+  }  
 }
 
-function createCurrentNodeByNewNode(newElement) {
-  if (newElement.nodeType === Node.TEXT_NODE) {
+function createRealNodeByVirtual(virtual) {
+  if (typeof virtual !== 'object') {
     return document.createTextNode('');
-  } 
-  return document.createElement(newElement.tagName);
+  }
+
+  return document.createElement(virtual.type);
 }
